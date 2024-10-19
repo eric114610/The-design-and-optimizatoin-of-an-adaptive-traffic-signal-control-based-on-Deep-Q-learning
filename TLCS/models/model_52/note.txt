@@ -1,0 +1,1 @@
+general model for cars with only left turn lane. (wrong?)

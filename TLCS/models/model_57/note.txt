@@ -1,0 +1,1 @@
+general model for cars and motor with only left turn lane.
