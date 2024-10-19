@@ -5,7 +5,7 @@ Aims to automaticly decide traffic signal using computer vision and Deep Q-learn
 
 Run the file training_main.py to start training.
 Run simulation.py to start simulating.
-
+Slides : https://shorturl.at/O1lkE
 ## Deep Q-learning
 Deep Q-learning related code is in "TLCS" folder. 
 
