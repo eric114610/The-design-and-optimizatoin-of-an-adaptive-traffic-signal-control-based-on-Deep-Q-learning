@@ -1,5 +1,5 @@
 # Intersection-Traffic-Light-Control-System
-Project for 2023 Meichu Hackathon NXP Team 2
+Project for 2024 Meichu Hackathon NXP Team 6
 
 Aims to automaticly decide traffic signal using computer vision and Deep Q-learning with camera footage at the intersection.
 
