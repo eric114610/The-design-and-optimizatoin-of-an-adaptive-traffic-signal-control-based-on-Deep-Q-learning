@@ -4,7 +4,7 @@ Project for 2024 Meichu Hackathon NXP Team 6
 Aims to automaticly decide traffic signal using computer vision and Deep Q-learning with camera footage at the intersection.
 
 
-Slides : https://shorturl.at/O1lkE
+**Slide** : https://shorturl.at/O1lkE
 ## Deep Q-learning
 Deep Q-learning related code is in "TLCS" folder. 
 
@@ -97,6 +97,6 @@ Controls :
 - Parameters : Lane(int : 2,3,4), LeftTurn(bool), Motorcycle(bool)
 
 ## Example Video
-fixed.mp4 - fixed traffic light SUMO simulation
-controled.mp4 - our system's SUMO simulation
-output_yolo.avi - vehicle detection results video
+[fixed.mp4](https://github.com/eric114610/The-design-and-optimizatoin-of-an-adaptive-traffic-signal-control-based-on-Deep-Q-learning/blob/main/fixed.mp4) - fixed traffic light SUMO simulation  
+[controled.mp4](https://github.com/eric114610/The-design-and-optimizatoin-of-an-adaptive-traffic-signal-control-based-on-Deep-Q-learning/blob/main/controled.mp4) - our system's SUMO simulation  
+[output_yolo.avi](https://github.com/eric114610/The-design-and-optimizatoin-of-an-adaptive-traffic-signal-control-based-on-Deep-Q-learning/blob/main/output_yolo.avi) - vehicle detection results video  
