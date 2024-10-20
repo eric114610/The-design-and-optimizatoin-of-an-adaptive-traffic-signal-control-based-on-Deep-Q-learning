@@ -77,7 +77,7 @@ Motor button - set simulation for also detecting motor.
 Lane dropdown list - set current lanes
 
 
-## NXP develop
+## NXP develope
 Platform :
 - i.Mx RT1060 EVKB
 
