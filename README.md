@@ -79,19 +79,22 @@ Lane dropdown list - set current lanes
 
 ## NXP develop
 Platform :
-i.Mx RT1060 EVKB
+- i.Mx RT1060 EVKB
+
 Software :
-MCUXpresso IDE v24.9.25
-Gui-Guider-1.8.0-GA
-SDK 2.16.0
-Tera Term
-We used the Gui Guider tool to create a simple traffic light control panel and a demonstration icon for the traffic light. Communication between the board and our computer is established via a serial port. By utilizing the Python library pyserial, we can control the parameters of our Traffic Light Control System through the LED panel on the board and display the corresponding traffic light indications.
+- MCUXpresso IDE v24.9.25
+- Gui-Guider-1.8.0-GA
+- SDK 2.16.0
+- Tera Term
+
+We used the Gui Guider tool to create a simple traffic light control panel and a demonstration icon for the traffic light. Communication between the board and our computer is established via a serial port. By utilizing the Python library ```pyserial```, we can control the parameters of our Traffic Light Control System through the LED panel on the board and display the corresponding traffic light indications.
 
 Traffic light :
-Red, Yellow, Green, Blue (Green for left turn)
+- Red, Yellow, Green, Blue (Green for left turn)
+
 Controls :
-Simulation : Start, End
-Parameters : Lane(int : 2,3,4), LeftTurn(bool), Motorcycle(bool)
+- Simulation : Start, End
+- Parameters : Lane(int : 2,3,4), LeftTurn(bool), Motorcycle(bool)
 
 ## Example Video
 fixed.mp4 - fixed traffic light SUMO simulation
