@@ -47,7 +47,7 @@ def parse_arguments2():
     parser.add_argument(
         '--num_lanes',
         type=int,
-        default=3,
+        default=2,
         help='Number of lanes in the simulation (default: 3)'
     )
     
@@ -63,7 +63,7 @@ def parse_arguments2():
     parser.add_argument(
         '--turn_left',
         type=bool,
-        default=True,
+        default=False,
         help='has turning light or false'
     )
     
@@ -82,19 +82,18 @@ def generate_random_numbers():
             return sorted(numbers, reverse=True), total_sum
         
 
-def change_mode(L, tmp_args, Models, tmp_simulations):
+def change_mode(L, tmp_args, Models, tmp_simulations, old_predict):
     print("command:", L)
     # predict = False
+    predict = old_predict
 
     if L == "b'TL\\n'":
         tmp_args.turn_left = 1-tmp_args.turn_left
-        predict = False
     elif L == "b'MT\\n'":
         if tmp_args.car_type != "motor":
             tmp_args.car_type = "motor"
         else:
             tmp_args.car_type == "cars"
-        predict = False
     elif L == "b'END\\n'":
         predict = False
     elif L == "b'START\\n'":
@@ -115,7 +114,6 @@ def change_mode(L, tmp_args, Models, tmp_simulations):
             )
             Simulations.append(TmpSimulation)
         tmp_simulations = Simulations
-        predict = False
 
     return tmp_args, tmp_simulations, predict
 
@@ -179,6 +177,10 @@ if __name__ == "__main__":
     Gfirst = True
     predict = True
 
+    
+    print("---------------------------WAITING----------------------------")
+    kalsdnk = input()
+
     while True:
 
         with open("close.txt", "r") as C:
@@ -196,7 +198,7 @@ if __name__ == "__main__":
             while(not predict):
                 L = str(ser.readline())
                 if L != "b''":
-                    tmp_args, tmp_Simulations, predict = change_mode(L, tmp_args, Models, tmp_Simulations)
+                    tmp_args, tmp_Simulations, predict = change_mode(L, tmp_args, Models, tmp_Simulations, predict)
                     break
 
         else:
@@ -212,17 +214,22 @@ if __name__ == "__main__":
         while predict: #predict:
             start_time = time.perf_counter()
 
+            with open("close.txt", "r") as C:
+                content = C.read()
+                if content == "END":
+                    break
+
             L = str(ser.readline())
-            print(L, type(L))
+            # print(L, type(L))
             if L != "b''":
-                tmp_args, tmp_Simulations, predict = change_mode(L, tmp_args, Models, tmp_Simulations)
+                tmp_args, tmp_Simulations, predict = change_mode(L, tmp_args, Models, tmp_Simulations, predict)
 
             # car_queue = firebase_db.get()
-            #print(car_queue)
-            # with open("close.txt", "r") as C:
-            #     content = C.read()
-            #     if content == "END":
-            #         break
+            # print(car_queue)
+            with open("close.txt", "r") as C:
+                content = C.read()
+                if content == "END":
+                    break
 
             if not predict:
                 break
@@ -239,33 +246,30 @@ if __name__ == "__main__":
                     content = file.read()
 
                 car_queue = [int(item.strip()) for item in content.split("\n")[:-1]]
-                print(car_queue)
+                # print(car_queue)
             else:
                 car_queue = [0]*32
             # print(my_list*8)
             
             #print(car_q)
             car_queue = CarQueue(car_queue)
-            if args.car_type == "cars":
-                if args.turn_left:
-                    result = Simulations[0].run(car_queue)
-                else:
-                    result = Simulations[1].run(car_queue)
+            
+            if args.turn_left:
+                result = Simulations[0].run(car_queue)
             else:
-                if args.turn_left:
-                    result = Simulations[2].run(car_queue)
-                else:
-                    result = Simulations[3].run(car_queue)
+                result = Simulations[1].run(car_queue)
+            
 
-            print(result)
+            if result:
+                print(result)
 
             if result < 5 and result > 0:
-                count=10
+                count=5
             elif result > 0:
                 count=4
 
             if result == 1:
-                if not args.tunr_left:
+                if not args.turn_left:
                     ser.write(b'x')
                 else:
                     ser.write(b'g')

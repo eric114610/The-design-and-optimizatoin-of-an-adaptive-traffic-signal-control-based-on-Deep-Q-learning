@@ -17,7 +17,7 @@ print("B")
 # Define the classes we want to detect
 # COCO dataset class indices:
 # car: 2, motorcycle: 3, bus: 5, truck: 7
-classes_to_detect = [2, 5, 7]
+classes_to_detect = [2, 5, 7, 3]
 
 # Define region of interest (ROI) - example coordinates
 # Format: [x1, y1, x2, y2] for the rectangle
@@ -767,39 +767,44 @@ while True:
     print("Total time:", total_time)
     
 
-    random.shuffle(numbers)
+    # random.shuffle(numbers)
 
 
-    with open("../../../Intersection-Traffic-Light-Control-System/TLCS/test.txt", "w") as file:
-        for i in numbers[:-2]:
+    # with open("../../../Intersection-Traffic-Light-Control-System/TLCS/test.txt", "w") as file:
+    #     for i in numbers[:-3]:
 
-            if i==1:
-                for item in vehicle_counts1:
-                    file.write(f"{item}\n")
-            elif i==2:
-                for item in vehicle_counts2:
-                    file.write(f"{item}\n")
+    #         if i==1:
+    #             for item in vehicle_counts1:
+    #                 file.write(f"{item}\n")
+    #         elif i==2:
+    #             for item in vehicle_counts2:
+    #                 file.write(f"{item}\n")
 
-            if i==3:
-                for item in vehicle_counts3:
-                    file.write(f"{item}\n")
-            elif i==4:
-                for item in vehicle_counts4:
-                    file.write(f"{item}\n")
+    #         if i==3:
+    #             for item in vehicle_counts3:
+    #                 file.write(f"{item}\n")
+    #         elif i==4:
+    #             for item in vehicle_counts4:
+    #                 file.write(f"{item}\n")
 
-            if i==5:
-                for item in vehicle_counts5:
-                    file.write(f"{item}\n")
-            elif i==6:
-                for item in vehicle_counts6:
-                    file.write(f"{item}\n")
+    #         if i==5:
+    #             for item in vehicle_counts5:
+    #                 file.write(f"{item}\n")
+    #         elif i==6:
+    #             for item in vehicle_counts6:
+    #                 file.write(f"{item}\n")
 
-            if i==7:
-                for item in vehicle_counts7:
-                    file.write(f"{item}\n")
-            elif i==8:
-                for item in vehicle_counts8:
-                    file.write(f"{item}\n")
+    #         if i==7:
+    #             for item in vehicle_counts7:
+    #                 file.write(f"{item}\n")
+    #         elif i==8:
+    #             for item in vehicle_counts8:
+                    # file.write(f"{item}\n")
+    
+
+
+
+    
             # random_numbers, total_sum = generate_random_numbers()
             # for item in random_numbers:
             #     file.write(f"{item}\n")
@@ -843,122 +848,192 @@ while True:
 
 
 
+print("---------------------------WAITING----------------------------")
+kalsdnk = input()
 
 
 
 
 
+import os
+
+video_path = "./input2.mp4"
+cap = cv2.VideoCapture(video_path)
+
+output_folder = 'detection_frames2'
+os.makedirs(output_folder, exist_ok=True)
+
+# Get video properties
+frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+fps = int(cap.get(cv2.CAP_PROP_FPS))
+frames_to_skip = fps * 11
+
+output_path = 'output.avi'  # Note: changed to .avi
+output = cv2.VideoWriter(
+    output_path,
+    cv2.VideoWriter_fourcc(*'XVID'),
+    fps,
+    (frame_width, frame_height)
+)
 
 
+frame_count = 0
+first = True
 
+while True:
 
-# video_path = "./input.mp4"
-# cap = cv2.VideoCapture(video_path)
+    with open("../../../Intersection-Traffic-Light-Control-System/TLCS/close.txt", "r") as C:
+        content = C.read()
+        if content == "END":
+            break
 
-# # Get video properties
-# frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-# frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-# fps = int(cap.get(cv2.CAP_PROP_FPS))
+    detection_count = 0
 
-# # output_path = './output.mp4'
-# # output = cv2.VideoWriter(output_path, 
-# #                         cv2.VideoWriter_fourcc(*'mp4v'),
-# #                         fps, 
-# #                         (frame_width, frame_height))
-# output_path = 'output.avi'  # Note: changed to .avi
-# output = cv2.VideoWriter(
-#     output_path,
-#     cv2.VideoWriter_fourcc(*'XVID'),
-#     fps,
-#     (frame_width, frame_height)
-# )
+    cap = cv2.VideoCapture(video_path)
 
-# while cap.isOpened():
-#     success, frame = cap.read()
-#     if not success:
-#         break
+    while cap.isOpened():
+        success, frame = cap.read()
+        if not success:
+            break
+
+        frame_count += 1
+        current_time = frame_count / fps
         
-#     # Create mask for ROI
-    
-#     # Run inference
-#     results = model(frame, classes=classes_to_detect)
-    
-#     # Initialize vehicle counts and coordinates for this frame
-#     vehicle_counts = [0, 0, 0, 0]  # [num_car, num_bus, num_truck, num_motor]
-#     vehicle_coordinates = {
-#         'car': [],
-#         'bus': [],
-#         'truck': [],
-#         'motorcycle': []
-#     }
-    
-#     # Process detections
-#     for r in results[0].boxes:
-#         cls = int(r.cls[0])
-#         conf = float(r.conf[0])
-#         box = r.xyxy[0].cpu().numpy()
-#         x1, y1, x2, y2 = map(int, box)
-#         center_x = (x1 + x2) // 2 * 1920//1280
-#         center_y = (y1 + y2) // 2 * 1920//1280
-#         center_x_f = (x1 + x2) // 2
-#         center_y_f = (y1 + y2) // 2
+        # Run inference
+        if first or frame_count % frames_to_skip == 0:
+            results = model(frame, classes=classes_to_detect)
+            
+            # Initialize vehicle counts and coordinates for this frame
+            vehicle_counts = [0, 0, 0, 0, 0]  # [num_car, num_bus, num_truck, total]
+            vehicle_coordinates = {
+                'car': [],
+                'bus': [],
+                'truck': [],
+                'motorcycle': []
+            }
+            
+            # Process detections
+            for r in results[0].boxes:
+                cls = int(r.cls[0])
+                conf = float(r.conf[0])
+                box = r.xyxy[0].cpu().numpy()
+                x1, y1, x2, y2 = map(int, box)
+                # center_x = (x1 + x2) // 2 * 1920//1280
+                # center_y = (y1 + y2) // 2 * 1920//1280
+                center_x = (x1 + x2) // 2 * 1920//1280
+                center_y = (y1 + y2) // 2 * 1920//1280
+                center_x_f = (x1 + x2) // 2
+                center_y_f = (y1 + y2) // 2
+                
+                # Store information based on class
+
+                # if center_x < 1010 and (-1.243*center_x+1443 < center_y):
+                if center_x < 910 and (-21/16*center_x+1434.375>center_y) and (-115/182*center_x+805<center_y):
+                    if cls == 2:    # car
+                        vehicle_counts[0] += 1
+                        vehicle_coordinates['car'].append({
+                            'bbox': (x1, y1, x2, y2),
+                            'center': (center_x_f, center_y_f),
+                            'confidence': conf
+                        })
+                    elif cls == 5:  # bus
+                        vehicle_counts[1] += 1
+                        vehicle_coordinates['bus'].append({
+                            'bbox': (x1, y1, x2, y2),
+                            'center': (center_x_f, center_y_f),
+                            'confidence': conf
+                        })
+                    elif cls == 7:  # truck
+                        vehicle_counts[2] += 1
+                        vehicle_coordinates['truck'].append({
+                            'bbox': (x1, y1, x2, y2),
+                            'center': (center_x_f, center_y_f),
+                            'confidence': conf
+                        })
+                    elif cls == 3:  # motor
+                        # print("AAA")
+                        vehicle_counts[4] += 1
+                        vehicle_coordinates['motorcycle'].append({
+                            'bbox': (x1, y1, x2, y2),
+                            'center': (center_x_f, center_y_f),
+                            'confidence': conf
+                        })
+                    vehicle_counts[3] = vehicle_counts[0] + vehicle_counts[1] + vehicle_counts[2]
+            
+            # Draw results on frame
+            res_plotted = results[0].plot()
+            
+            # Draw ROI rectangle
+            # cv2.rectangle(res_plotted, (roi[0], roi[1]), (roi[2], roi[3]), (0, 255, 0), 2)
+            
+            # Draw vehicle counts
+            text = f"Cars: {vehicle_counts[0]} Bus: {vehicle_counts[1]} Trucks: {vehicle_counts[2]} Motors: {vehicle_counts[4]} Total: {vehicle_counts[3]}"
+            cv2.putText(res_plotted, text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
+            
+            # Draw center points and coordinates
+            for vehicle_type, coords in vehicle_coordinates.items():
+                for detection in coords:
+                    center = detection['center']
+                    cv2.circle(res_plotted, center, 5, (0, 255, 255), -1)
+                    cv2.putText(res_plotted, f"({center[0]}, {center[1]})", 
+                                (center[0] + 10, center[1]), 
+                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)
+            
+            # Write frame to output video
+            output_path = f'{output_folder}/detection_{current_time:.1f}s.jpg'
+            # cv2.imwrite(output_path, res_plotted)
+
+            with open("../../../Intersection-Traffic-Light-Control-System/TLCS/test.txt", "w") as file:
+                for item in vehicle_counts[:-1]:
+                        file.write(f"{item}\n")
+                # f.write(f"{current_time:.1f} {vehicle_counts[0]} {vehicle_counts[1]} {vehicle_counts[2]} {vehicle_counts[3]}\n")
+            # output.write(res_plotted)
+
+                random.shuffle(numbers)
+
+
+            # with open("../../../Intersection-Traffic-Light-Control-System/TLCS/test.txt", "w") as file:
+                for i in numbers[:-3]:
+
+                    if i==1:
+                        for item in vehicle_counts1:
+                            file.write(f"{item}\n")
+                    elif i==2:
+                        for item in vehicle_counts2:
+                            file.write(f"{item}\n")
+
+                    if i==3:
+                        for item in vehicle_counts3:
+                            file.write(f"{item}\n")
+                    elif i==4:
+                        for item in vehicle_counts4:
+                            file.write(f"{item}\n")
+
+                    if i==5:
+                        for item in vehicle_counts5:
+                            file.write(f"{item}\n")
+                    elif i==6:
+                        for item in vehicle_counts6:
+                            file.write(f"{item}\n")
+
+                    if i==7:
+                        for item in vehicle_counts7:
+                            file.write(f"{item}\n")
+                    elif i==8:
+                        for item in vehicle_counts8:
+                            file.write(f"{item}\n")
+                    elif i==9:
+                        for item in vehicle_counts9:
+                            file.write(f"{item}\n")
+                    elif i==10:
+                        for item in vehicle_counts10:
+                            file.write(f"{item}\n")
+
+        first = False
         
-#         # Store information based on class
-
-#         if center_x < 1010 and (-1.243*center_x+1443 < center_y):
-#             if cls == 2:    # car
-#                 vehicle_counts[0] += 1
-#                 vehicle_coordinates['car'].append({
-#                     'bbox': (x1, y1, x2, y2),
-#                     'center': (center_x_f, center_y_f),
-#                     'confidence': conf
-#                 })
-#             elif cls == 5:  # bus
-#                 vehicle_counts[1] += 1
-#                 vehicle_coordinates['bus'].append({
-#                     'bbox': (x1, y1, x2, y2),
-#                     'center': (center_x_f, center_y_f),
-#                     'confidence': conf
-#                 })
-#             elif cls == 7:  # truck
-#                 vehicle_counts[2] += 1
-#                 vehicle_coordinates['truck'].append({
-#                     'bbox': (x1, y1, x2, y2),
-#                     'center': (center_x_f, center_y_f),
-#                     'confidence': conf
-#                 })
-#             elif cls == 3:  # motorcycle
-#                 vehicle_counts[3] += 1
-#                 vehicle_coordinates['motorcycle'].append({
-#                     'bbox': (x1, y1, x2, y2),
-#                     'center': (center_x_f, center_y_f),
-#                     'confidence': conf
-#                 })
-    
-#     # Draw results on frame
-#     res_plotted = results[0].plot()
-    
-#     # Draw ROI rectangle
-#     # cv2.rectangle(res_plotted, (roi[0], roi[1]), (roi[2], roi[3]), (0, 255, 0), 2)
-    
-#     # Draw vehicle counts
-#     text = f"Cars: {vehicle_counts[0]} Bus: {vehicle_counts[1]} Trucks: {vehicle_counts[2]} Motorcycles: {vehicle_counts[3]}"
-#     cv2.putText(res_plotted, text, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
-    
-#     # Draw center points and coordinates
-#     for vehicle_type, coords in vehicle_coordinates.items():
-#         for detection in coords:
-#             center = detection['center']
-#             cv2.circle(res_plotted, center, 5, (0, 255, 255), -1)
-#             cv2.putText(res_plotted, f"({center[0]}, {center[1]})", 
-#                         (center[0] + 10, center[1]), 
-#                         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 255), 2)
-    
-#     # Write frame to output video
-#     output.write(res_plotted)
-    
     
 
-# # Release everything
-# cap.release()
-# output.release()
+# Release everything
+cap.release()
+output.release()
