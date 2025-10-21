@@ -4,7 +4,7 @@ Project for 2024 Meichu Hackathon NXP Team 6
 Aims to automaticly decide traffic signal using computer vision and Deep Q-learning with camera footage at the intersection.
 
 
-**Slide** : https://shorturl.at/O1lkE
+**Slide** : [link](https://docs.google.com/presentation/d/1OPjVy10UWFwu3H1j3bSFsasV1C6Igc0V/edit?usp=sharing&ouid=108291920476484159238&rtpof=true&sd=true)
 ## Deep Q-learning
 Deep Q-learning related code is in "TLCS" folder. 
 
